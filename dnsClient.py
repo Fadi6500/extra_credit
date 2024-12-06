@@ -119,7 +119,7 @@ def dns_query(type, name, server):
 
     # Parse the response answer section
     response_answer = data[12+len(question):] # We would be looking at the same index position as before (after the header)
-    offset = 12
+    offset = 0
     for _ in range(ANCOUNT):
         # Parse the name
         name_parts = []
@@ -144,7 +144,7 @@ def dns_query(type, name, server):
         # Parse the type, class, TTL, and RDLENGTH
         type, cls, ttl, rdlength = struct.unpack('!HHIH', response_answer[offset:offset+12]) # What is the offset value in bytes? Remember 'H' represent 2 bytes, and 'I' represents one byte, we declared '!HHIH'. 
         
-        offset += 12 # Same value as just calculated
+        offset += 10 # Same value as just calculated
 
         # Parse the RDATA
         rdata = response_answer[offset:offset+rdlength]
