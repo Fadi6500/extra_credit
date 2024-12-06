@@ -114,12 +114,12 @@ def dns_query(type, name, server):
     ID, FLAGS, QDCOUNT, ANCOUNT, NSCOUNT, ARCOUNT = struct.unpack('!HHHHHH', response_header) # We are unpacking the binary data of the response header into individual values representing the fields of the DNS header.
     
     # Parse the response question section (same as query)
-    response_question = data[10:10+len(question)] # The data variable starts immediately after the header section, so what is it's index? Note the two '??' '??' will be the same value as we start at a specific index and then go for the entire length of the binary data received. 
+    response_question = data[12:12+len(question)] # The data variable starts immediately after the header section, so what is it's index? Note the two '??' '??' will be the same value as we start at a specific index and then go for the entire length of the binary data received. 
     assert response_question == question
 
     # Parse the response answer section
-    response_answer = data[10+len(question):] # We would be looking at the same index position as before (after the header)
-    offset = 0
+    response_answer = data[12+len(question):] # We would be looking at the same index position as before (after the header)
+    offset = 10
     for _ in range(ANCOUNT):
         # Parse the name
         name_parts = []
@@ -142,9 +142,9 @@ def dns_query(type, name, server):
         name = '.'.join(name_parts)
 
         # Parse the type, class, TTL, and RDLENGTH
-        type, cls, ttl, rdlength = struct.unpack('!HHIH', response_answer[offset:offset+10]) # What is the offset value in bytes? Remember 'H' represent 2 bytes, and 'I' represents one byte, we declared '!HHIH'. 
+        type, cls, ttl, rdlength = struct.unpack('!HHIH', response_answer[offset:offset+12]) # What is the offset value in bytes? Remember 'H' represent 2 bytes, and 'I' represents one byte, we declared '!HHIH'. 
         
-        offset += 10 # Same value as just calculated
+        offset += 12 # Same value as just calculated
 
         # Parse the RDATA
         rdata = response_answer[offset:offset+rdlength]
