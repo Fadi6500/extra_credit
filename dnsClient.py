@@ -119,7 +119,7 @@ def dns_query(type, name, server):
 
     # Parse the response answer section
     response_answer = data[12+len(question):] # We would be looking at the same index position as before (after the header)
-    offset = 10
+    offset = 12
     for _ in range(ANCOUNT):
         # Parse the name
         name_parts = []
